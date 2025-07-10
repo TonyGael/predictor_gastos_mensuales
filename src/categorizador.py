@@ -59,4 +59,33 @@ class CategorizadorGastos:
                 df.loc[df['descripcion'].str.contains(regla, na=False, regex=True, case=False), 'categoria_auto'] = categoria
         
         if 'gategoria' in df.columns:
-            df.local[df['categoria_auto'] == ]
+            df.local[df['categoria_auto'] == 'Desconocido', 'categoria_auto'] = df['categoria']
+            
+        print('Transacciones categorizadas automáticamente.')
+
+# vamos a categorizar nuestro contenido sintético generado y guatdado en gastos_personales.csv
+if __name__ == '__main__':
+    # gastos_personlaes.csv debe estar en la carpeata data/
+    # o pasaos la ruta apropaa donde leer el dataframe
+    ruta_archivo_gastos = 'data/gastos_personales.csv'
+    
+    try:
+        df_gastos = pd.read_csv(ruta_archivo_gastos)
+        print(f'Primeras 5 filas del DataFRame cargado:')
+        print(df_gastos.head())
+        
+        categorizador = CategorizadorGastos()
+        df_gastos_categorizados = categorizador.categorizar(df_gastos.copy())
+        
+        print('DataFRame con categorías automáticas:')
+        print(df_gastos_categorizados.head())   # muestra mas filas para ver la categorizazión
+        
+        # verificamos la distribución de las nuevas categorías
+        print('Distribución de "categorias_auto":')
+        print(df_gastos_categorizados['categoria_auto'].value_counts())
+        
+    except FileNotFoundError:
+        print(f'Error: el archivo "{ruta_archivo_gastos}" no fue encontrado.')
+        print('Asegurate de ejecutar el script: "generador_datos_sinteticos.py"para crear el DataFrame sintético.')
+    except Exception as e:
+        printprint(f'Ocurrió un error al cargar o procesar el archivo. Error: {e}')
